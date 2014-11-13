@@ -80,8 +80,13 @@ treat_argv(char **argv) {
 void
 do_bg(char **argv) 
 {
-    printf("do_bg : To be implemented\n");
-    
+  struct job_t *job;
+
+  job = treat_argv(argv);
+  if( job != NULL) {
+    kill(job->jb_pid, SIGCONT);
+    job->jb_state = BG;
+  }
     return;
 }
 
@@ -128,8 +133,14 @@ waitfg(pid_t pid)
 void
 do_fg(char **argv) 
 {
-    printf("do_fg : To be implemented\n");
-    
+  struct job_t *job;
+
+  job = treat_argv(argv);
+  if( job != NULL) {
+    kill(job->jb_pid, SIGCONT);
+    job->jb_state = FG;
+    waitfg(job->jb_pid);
+  }
     return;
 }
 
