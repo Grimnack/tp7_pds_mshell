@@ -110,10 +110,11 @@ sigtstp_handler(int sig)
 {
   int status ;
   pid_t pid ;
+  status = -1;
   if (verbose)
     printf("sigint_handler: entering\n");
   if((pid=jobs_fgpid())>0){
-    kill(pid,SIGSTP) ;
+    kill(pid,SIGSTOP) ;
     assert(status);
     if(verbose)
       printf("sigint_handler: fg job [%d] killed\n", (int) pid);
