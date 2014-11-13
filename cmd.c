@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <assert.h>
 
 #include "jobs.h"
 
@@ -134,7 +135,6 @@ void
 do_fg(char **argv) 
 {
   struct job_t *job;
-
   job = treat_argv(argv);
   if( job != NULL) {
     kill(job->jb_pid, SIGCONT);
@@ -147,9 +147,13 @@ do_fg(char **argv)
 /* do_stop - Execute the builtin stop command */
 void
 do_stop(char **argv) 
-{
-  printf("do_stop : To be implemented\n");
-  
+{  
+  struct job_t *job;
+  job = treat_argv(argv);
+
+  if( job != NULL) {
+    kill(job->jb_pid, SIGTSTP);
+  }
   return;
 }
 
