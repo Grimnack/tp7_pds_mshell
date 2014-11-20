@@ -8,7 +8,8 @@
 
 #include <stdio.h>
 #include <string.h>
- 
+#include <signal.h>
+
 #include "jobs.h"
 
 #define MAXJOBS      16		/* max jobs at any point in time */
@@ -27,6 +28,16 @@ jobs_clearjob(struct job_t *job)
     job->jb_jid = 0;
     job->jb_state = UNDEF;
     job->jb_cmdline[0] = '\0';
+}
+
+/* stilljobs - Returns true if there are still jobs running */
+int
+jobs_stilljobs() {
+  int i;
+  for(i = 0; i < MAXJOBS; i++)
+    if(jobs[i].jb_pid)
+      return 1;
+  return 0;
 }
 
 /* initjobs - Initialize the job list */
@@ -165,6 +176,19 @@ jobs_getstoppedjob() {
     return NULL;
 }
 
+/* job_killjobs - Kills all the jobs */
+void
+jobs_killjobs() {
+  int i;
+  for(i = 0; i < MAXJOBS; i++) {
+    if(jobs[i].jb_pid != 0) {
+      kill(jobs[i].jb_pid,SIGKILL);
+      jobs_clearjob(&jobs[i]);
+    }
+  }
+  return;
+}
+
 /* listjobs - Print the job list */
 void
 jobs_listjobs() 
@@ -188,7 +212,7 @@ jobs_listjobs()
 		    printf("listjobs: Internal error: job[%d].state=%d ", 
 			   i, jobs[i].jb_state);
 	    }
-	    printf("%s", jobs[i].jb_cmdline);
+	    printf("%s\n", jobs[i].jb_cmdline);
 	}
     }
 }

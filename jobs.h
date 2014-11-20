@@ -27,6 +27,9 @@ struct job_t {                 /* The job struct */
 /* clearjob - Clear the entries in a job struct */
 extern void jobs_clearjob(struct job_t *job);   
 
+/* stilljobs - Returns true if there are still jobs running */
+extern int jobs_stilljobs();
+
 /* initjobs - Initialize the job list */
 extern void jobs_initjobs();
   
@@ -53,6 +56,9 @@ extern int jobs_pid2jid(pid_t pid);
 
 /*getstoppedjob - Return a stopped job if any  */
 extern struct job_t * jobs_getstoppedjob();
+
+/* job_killjobs - Kills all the jobs */
+extern void jobs_killjobs();
 
 /* listjobs - Print the job list */
 extern void jobs_listjobs();

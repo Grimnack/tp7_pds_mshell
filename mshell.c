@@ -20,7 +20,7 @@
 #include "common.h"
 
 static char prompt[] = "mshell> ";    /* command line prompt */
-
+int remaining_processes = 0;
 
 /*
  * usage - print a help message
@@ -92,41 +92,45 @@ int builtin_cmd(char **argv)
 {
     char *cmd = argv[0];
 
-    if (!strcmp(cmd, "help")) { /* quit command */
-      do_help();  
-      return 1;
-    }
-
-    if (!strcmp(cmd, "stop")) { /* quit command */
-      do_stop(argv);
-      return 1;
-    }
-
     if (!strcmp(cmd, "exit")) { /* quit command */
-      do_exit();
+      do_exit(remaining_processes);
+      remaining_processes = 1;
       return 1;
     }
+    else {
+      remaining_processes = 0;
 
-    if (!strcmp(cmd, "jobs")) { /* jobs command */
-      do_jobs();
-      return 1;    
+      if (!strcmp(cmd, "help")) { /* quit command */
+	do_help();  
+	return 1;
+      }
+
+      if (!strcmp(cmd, "stop")) { /* quit command */
+	do_stop(argv);
+	return 1;
+      }
+
+
+      if (!strcmp(cmd, "jobs")) { /* jobs command */
+	do_jobs();
+	return 1;    
+      }
+
+      if (!strcmp(cmd, "bg")) { /* bg and fg commands */
+	do_bg(argv);
+	return 1;
+      }
+
+      if (!strcmp(cmd, "fg")) { /* bg and fg commands */
+	do_fg(argv);
+	return 1;
+      }
+
+      if (!strcmp(cmd, "kill")) { /* bg and fg commands */
+	do_kill(argv);
+	return 1;
+      }
     }
-
-    if (!strcmp(cmd, "bg")) { /* bg and fg commands */
-      do_bg(argv);
-      return 1;
-    }
-
-    if (!strcmp(cmd, "fg")) { /* bg and fg commands */
-      do_fg(argv);
-      return 1;
-    }
-
-    if (!strcmp(cmd, "kill")) { /* bg and fg commands */
-      do_kill(argv);
-      return 1;
-    }
-
 
     return 0;     /* not a builtin command */
 }

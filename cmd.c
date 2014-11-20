@@ -161,26 +161,40 @@ do_stop(char **argv)
 void
 do_kill(char **argv) 
 {
-    printf("do_kill : To be implemented\n");
-    
-    return;
+  struct job_t *job;
+  pid_t pid;
+  job = treat_argv(argv);
+  if( job != NULL) {
+    pid = job->jb_pid;
+    kill(pid,SIGKILL);
+    assert(jobs_deletejob(pid));
+  }
+  if(verbose)
+    printf("kill %d\n", (int) pid) ;
+  return;
 }
 
 /* do_exit - Execute the builtin exit command */
 void
-do_exit()
+do_exit(int remaining_processes)
 {
-    printf("do_exit : To be implemented\n");
-    
-    return;
+  if(jobs_stilljobs()) {
+    if(!remaining_processes)
+      printf("Il y a un processus actif dans ce terminal. Fermer le terminal l'interrompra.\n") ;
+    else {
+      jobs_killjobs();
+      exit(EXIT_SUCCESS);
+    }
+  }
+  else
+    exit(EXIT_SUCCESS);
 }
 
-/* do_jobs - Execute the builtin fg command */
+/* do_jobs - Execute the builtin jobs command */
 void
 do_jobs()
 {
-    printf("do_jobs : To be implemented\n");
-    
-    return;
+  jobs_listjobs();
+  return;
 }
 

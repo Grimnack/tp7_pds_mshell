@@ -51,10 +51,10 @@ sigchld_handler(int sig)
   if (verbose)
     printf("sigchld_handler: entering\n");
     
-  pid = waitpid(-1,&status, WNOHANG | WUNTRACED);
+  pid = waitpid(-1,&status, WNOHANG | WUNTRACED | WCONTINUED);
   if(WIFSTOPPED(status)) {
       job = jobs_getjobpid(pid) ;
-      job->jb_state = ST ;
+      job->jb_state = ST;
     }else if(WIFEXITED(status)){
       jobs_deletejob(pid);
       if(verbose)
@@ -63,6 +63,10 @@ sigchld_handler(int sig)
       jobs_deletejob(pid);
       if(verbose)
 	printf("WIFSIGNALED\n");
+    }
+    else if(WIFCONTINUED(status)) {
+      if(verbose)
+	printf("WIFCONTINUED\n");
     }
     else
       if(verbose)
@@ -114,7 +118,7 @@ sigtstp_handler(int sig)
   if (verbose)
     printf("sigint_handler: entering\n");
   if((pid=jobs_fgpid())>0){
-    kill(pid,SIGTSTP) ;
+    kill(pid,SIGTSTP);
     assert(status);
     if(verbose)
       printf("sigint_handler: fg job [%d] killed\n", (int) pid);
