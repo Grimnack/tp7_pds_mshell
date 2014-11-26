@@ -1,0 +1,149 @@
+Script started on jeu. 27 nov. 2014 00:02:28 CET
+]0;non0w@non0w-lmde: /media/DATA/Arnaud/Mes Documents/Cours/Info/L3/S5/PDS/tp7_pds_mshellnon0w@non0w-lmde:/media/DATA/Arnaud/Mes Documents/Cours/Info/L3/S5/PDS/tp7_pds_msshell$ ./mshell -v
+
+Type help to find out all the available commands in mshell
+
+mshell> xclock
+Added job [1] 10762 xclock
+^Csigint_handler: entering
+sigint_handler: fg job [10762] killed
+sigint_handler: exiting
+mshell> sigchld_handler: entering
+WIFSIGNALED
+sigchld_handler: exiting
+
+mshell> jobs
+mshell> xclock -update 1
+Added job [1] 10765 xclock
+
+^Zsigstp_handler: entering
+sigstp_handler: fg job [10765] killed
+sigstp_handler: exiting
+sigchld_handler: entering
+sigchld_handler: exiting
+mshell> bg %M     jobs
+[1] (10765) Stopped xclock
+mshell> %1  bg %1
+mshell> sigchld_handler: entering
+WIFCONTINUED
+sigchld_handler: exiting
+
+mshell> jobs
+[1] (10765) Running xclock
+mshell> fg %1
+process 10765 is now in foreground
+^Csigint_handler: entering
+sigint_handler: fg job [10765] killed
+sigint_handler: exiting
+mshell> sigchld_handler: entering
+WIFSIGNALED
+sigchld_handler: exiting
+
+mshell> xclock -update 1 &
+Added job [1] 10772 xclock
+[1] (10772) xclock
+mshell> stop %1
+10772 is stopped
+mshell> sigchld_handler: entering
+sigchld_handler: exiting
+
+mshell> jobs
+[1] (10772) Stopped xclock
+mshell> kill %1
+killed 10772
+mshell> sigchld_handler: entering
+WIFSIGNALED
+sigchld_handler: exiting
+
+mshell> jobs
+mshell> ls | wc
+2 commands
+First command : ls
+Added job [1] 10774 ls
+Last command : wc 
+Added job [2] 10775 wc
+     20      20     174
+sigchld_handler: entering
+WIFEXITED
+sigchld_handler: exiting
+sigchld_handler: entering
+WIFEXITED
+sigchld_handler: exiting
+mshell> ls | wc | wc
+3 commands
+First command : ls
+Added job [1] 10776 ls
+2e command : wc
+Added job [2] 10777 wc
+Last command : wc 
+Added job [3] 10778 wc
+sigchld_handler: entering
+WIFEXITED
+sigchld_handler: exiting
+      1       3      24
+sigchld_handler: entering
+WIFEXITED
+sigchld_handler: exiting
+sigchld_handler: entering
+WIFEXITED
+sigchld_handler: exiting
+mshell> ls | wc | wc | wc -w
+4 commands
+First command : ls
+Added job [1] 10780 ls
+2e command : wc
+Added job [2] 10781 wc
+3e command : wc
+Added job [3] 10782 wc
+Last command : wc 
+Added job [4] 10783 wc
+sigchld_handler: entering
+WIFEXITED
+sigchld_handler: exiting
+sigchld_handler: entering
+WIFEXITED
+sigchld_handler: exiting
+3
+sigchld_handler: entering
+WIFEXITED
+sigchld_handler: exiting
+sigchld_handler: entering
+WIFEXITED
+sigchld_handler: exiting
+mshell> ls | xeyes
+2 commands
+First command : ls
+Added job [1] 10785 ls
+Last command : xeyes 
+Added job [2] 10786 xeyes
+sigchld_handler: entering
+WIFEXITED
+sigchld_handler: exiting
+
+^Csigint_handler: entering
+sigint_handler: fg job [10786] killed
+sigint_handler: exiting
+mshell> sigchld_handler: entering
+WIFSIGNALED
+sigchld_handler: exiting
+
+mshell> ls | xeyez   s &
+2 commands
+First command : ls
+Added job [1] 10788 ls
+Last command : xeyes 
+Added job [2] 10789 xeyes
+mshell> sigchld_handler: entering
+WIFEXITED
+sigchld_handler: exiting
+
+mshell> jobs
+[2] (10789) Running xeyes
+mshell> exit
+Il y a un processus actif dans ce terminal. Fermer le terminal l'interrompra.
+mshell> exit
+All Remaining jobs killed
+]0;non0w@non0w-lmde: /media/DATA/Arnaud/Mes Documents/Cours/Info/L3/S5/PDS/tp7_pds_mshellnon0w@non0w-lmde:/media/DATA/Arnaud/Mes Documents/Cours/Info/L3/S5/PDS/tp7_pds_msshell$ exit
+exit
+
+Script done on jeu. 27 nov. 2014 00:04:18 CET
