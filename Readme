@@ -1,0 +1,14 @@
+TP7 PDS : mshell
+================
+
+Auteurs : Cojez Arnaud et Caron Matthieu
+Date de création : Jeudi 13 Novembre
+Derniere modification : Mercredi 26 Novembre
+
+Pour afficher le script de test :
+    $ make test 
+
+Nous avons réussi à implémenter les enchaînements de pipes.
+Seulement, les processus lancés ne font pas partie d'un groupe, mais sont des processus à part entière.
+
+Merci de votre attention !

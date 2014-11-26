@@ -22,6 +22,9 @@ mshell.o: mshell.c cmd.h sighandlers.h jobs.h common.h
 sighandlers.o: sighandlers.c jobs.h common.h sighandlers.h
 
 # misc
+test: typescript
+	less typescript
+
 .PHONY: clean mrpopoer realclean
 clean::
 	rm -f $(OBJS) *~
