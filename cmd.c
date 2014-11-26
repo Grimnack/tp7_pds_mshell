@@ -187,6 +187,8 @@ do_exit(int remaining_processes)
       printf("Il y a un processus actif dans ce terminal. Fermer le terminal l'interrompra.\n") ;
     else {
       jobs_killjobs();
+      if(verbose)
+	printf("All Remaining jobs killed\n");
       exit(EXIT_SUCCESS);
     }
   }
