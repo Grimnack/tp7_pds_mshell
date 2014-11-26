@@ -16,11 +16,13 @@
 void do_pipe(char *cmds[MAXCMDS][MAXARGS], int nbcmd, int bg) {
   int fds[MAXCMDS][2];
   int i, j;
-  printf("%d commandes\n", nbcmd);
+  if(verbose)
+    printf("%d commands\n", nbcmd);
   pipe(fds[0]);
 
   /*1er Fork*/
-  printf("%de fork (premier)\n", 0);
+  if(verbose)
+    printf("%de fork (first one)\n", 0);
   switch(fork()) 
     {
     case -1:
@@ -36,7 +38,8 @@ void do_pipe(char *cmds[MAXCMDS][MAXARGS], int nbcmd, int bg) {
   for(i = 1; i < nbcmd-1; i++)
     {
       pipe(fds[i]);
-      printf("%de fork\n", i);
+      if(verbose)
+	printf("%de fork\n", i);
       /*nbcmds Fork*/
       switch(fork())
 	{
@@ -56,7 +59,8 @@ void do_pipe(char *cmds[MAXCMDS][MAXARGS], int nbcmd, int bg) {
 	}
     }
   /*Dernier Fork*/
-  printf("%de fork (dernier)\n", i);
+  if(verbose)
+    printf("%de fork (last one)\n", i);
   switch(fork()) 
     {
     case -1: /*erreur*/

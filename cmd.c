@@ -137,6 +137,8 @@ do_fg(char **argv)
   struct job_t *job;
   job = treat_argv(argv);
   if( job != NULL) {
+    if(verbose)
+      printf("process %d is now in foreground\n", job->jb_pid);
     kill(job->jb_pid, SIGCONT);
     job->jb_state = FG;
     waitfg(job->jb_pid);
@@ -152,6 +154,8 @@ do_stop(char **argv)
   job = treat_argv(argv);
 
   if( job != NULL) {
+    if(verbose)
+      printf("%d is stopped\n", job->jb_pid); 
     kill(job->jb_pid, SIGTSTP);
   }
   return;
@@ -168,9 +172,9 @@ do_kill(char **argv)
     pid = job->jb_pid;
     kill(pid,SIGKILL);
     assert(jobs_deletejob(pid));
+    if(verbose)
+      printf("killed %d\n", (int) pid) ;
   }
-  if(verbose)
-    printf("kill %d\n", (int) pid) ;
   return;
 }
 
