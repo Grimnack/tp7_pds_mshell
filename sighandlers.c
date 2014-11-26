@@ -63,14 +63,15 @@ sigchld_handler(int sig)
       jobs_deletejob(pid);
       if(verbose)
 	printf("WIFSIGNALED\n");
+    }else if(WIFSTOPPED(status)) {
+      jobs_deletejob(pid);
+      if(verbose)
+	printf("WIFSTOPPED\n");
     }
     else if(WIFCONTINUED(status)) {
       if(verbose)
 	printf("WIFCONTINUED\n");
     }
-    else
-      if(verbose)
-	printf("crying\n");
     
   if (verbose)
     printf("sigchld_handler: exiting\n");

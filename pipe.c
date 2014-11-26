@@ -8,22 +8,26 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "pipe.h"
 #include <assert.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include "pipe.h"
+#include "jobs.h"
+#include "cmd.h"
 
 void do_pipe(char *cmds[MAXCMDS][MAXARGS], int nbcmd, int bg) {
   int fds[MAXCMDS][2];
   int i, j;
+  pid_t pid;
   if(verbose)
     printf("%d commands\n", nbcmd);
   pipe(fds[0]);
 
   /*1er Fork*/
   if(verbose)
-    printf("%de fork (first one)\n", 0);
-  switch(fork()) 
+    printf("First command : %s\n", cmds[0][0]);
+  pid = fork();
+  switch(pid)
     {
     case -1:
       exit(EXIT_FAILURE);
@@ -31,17 +35,17 @@ void do_pipe(char *cmds[MAXCMDS][MAXARGS], int nbcmd, int bg) {
       dup2(fds[0][1], STDOUT_FILENO);
       close(fds[0][0]);
       close(fds[0][1]);
-      execvp(cmds[0][0], cmds[0]);
-      break;
+    default:
+      execute(cmds[0], bg, pid);
     }
-
   for(i = 1; i < nbcmd-1; i++)
     {
       pipe(fds[i]);
       if(verbose)
-	printf("%de fork\n", i);
+	printf("%de command : %s\n", i+1, cmds[i][0]);
       /*nbcmds Fork*/
-      switch(fork())
+      pid = fork();
+      switch(pid)
 	{
 	case -1:
 	  exit(EXIT_FAILURE);
@@ -54,14 +58,15 @@ void do_pipe(char *cmds[MAXCMDS][MAXARGS], int nbcmd, int bg) {
 	      close(fds[j][0]);
 	      close(fds[j][1]);
 	    }
-	  execvp(cmds[i][0], cmds[i]);
-	  break;
+	default:
+	  execute(cmds[i], bg, pid);
 	}
     }
   /*Dernier Fork*/
   if(verbose)
-    printf("%de fork (last one)\n", i);
-  switch(fork()) 
+    printf("Last command : %s \n", cmds[i][0]);
+  pid = fork();
+  switch(pid) 
     {
     case -1: /*erreur*/
       exit(EXIT_FAILURE);
@@ -73,8 +78,8 @@ void do_pipe(char *cmds[MAXCMDS][MAXARGS], int nbcmd, int bg) {
 	  close(fds[j][0]);
 	  close(fds[j][1]);
 	}
-      execvp(cmds[i][0], cmds[i]);
-      break;
+    default:
+      execute(cmds[i], bg, pid);
     }
 
   /* Fermeture des fds */
@@ -84,9 +89,30 @@ void do_pipe(char *cmds[MAXCMDS][MAXARGS], int nbcmd, int bg) {
       close(fds[j][1]);
     }
 
-  /* Wait si bg est false*/
+  /* Wait si bg est false
   if(!bg)
     for(i = 0; i < nbcmd; i++)
-    wait(0);
-      return;
+    wait(0);*/   
+  if (!bg) 
+    waitfg(pid);
+    return;
+}
+
+void execute(char **cmd, int bg, pid_t pid)
+{
+  sigset_t mask;       /* signal mask */
+  assert(pid != -1);
+  if(pid == 0)
+    {	
+      sigprocmask(SIG_UNBLOCK, &mask, NULL);
+      if (setpgid(0, 0) < 0) 
+	unix_error("setpgid error"); 
+      if(execvp(cmd[0], cmd) < 0) {
+	printf("%s: Command not found\n", cmd[0]);
+	exit(EXIT_FAILURE);
+      } 
+    }
+  jobs_addjob(pid, (bg == 1 ? BG : FG), cmd[0]);
+  sigprocmask(SIG_UNBLOCK, &mask, NULL);
+  return;
 }

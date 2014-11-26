@@ -12,5 +12,7 @@
 #include "common.h"
 
 extern void do_pipe(char *cmds[MAXCMDS][MAXARGS], int nbcmd, int bg);
+extern void execute(char **cmd, int bg, pid_t pid);
+
 
 #endif
